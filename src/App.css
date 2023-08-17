@@ -1,7 +1,33 @@
 .App {
   text-align: center;
+
 }
 
+.flex-container{
+  display: flex;
+}
+
+.blackborder{
+  border: #282c34 1px solid;
+  border-collapse: collapse;
+  padding: 10px;
+  margin: 10px;
+}
+
+.greenpillbutton{
+  background-color: #9dd045;
+  color: white;
+  height: 65px;
+  width: 185px;
+  border-radius: 80px;
+}
+
+.greypill {
+  border-radius: 40px;
+  background-color: darkblue;
+  color: white;
+  padding: 10px;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
