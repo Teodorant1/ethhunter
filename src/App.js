@@ -4,6 +4,8 @@ import { useState } from "react";
 import axios, { Axios } from "axios";
 import { BsFillExclamationSquareFill } from "react-icons/bs";
 import { IconContext } from "react-icons";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
   //const [buttonclicked, setbuttonclicked] = useState(false);
@@ -13,8 +15,12 @@ function App() {
 
   const [xcord, setxcord] = useState(0);
   const [ycord, setycord] = useState(0);
+  const [display, setdisplay] = useState("none");
+  // const [xcord2, setxcord2] = useState(0);
+  // const [ycord2, setycord2] = useState(0);
+  // const [display2, setdisplay2] = useState("none");
   const [err, seterr] = useState(" ");
-
+  const [startDate, setStartDate] = useState(new Date(2023, 0, 0, +2, 0));
   const [transactions, settransactions] = useState({
     message: "OK",
     status: "1",
@@ -681,7 +687,34 @@ function App() {
       },
     ],
   });
-  const [display, setdisplay] = useState("none");
+  const [etherCoins, setetherCoins] = useState({
+    balanceattime: 0,
+  });
+
+  async function getBalanceAtDate() {
+    const date1 = startDate.getTime();
+
+    console.log(startDate.getTime());
+
+    const fetchpayload =
+      '{  "address": "' +
+      document.getElementById("address1").value +
+      '","date":' +
+      date1 +
+      "}";
+
+    console.log(fetchpayload);
+
+    //   const fetchpayloadJson = JSON.stringify();
+
+    axios
+      .post("http://localhost:8001/getbalance", fetchpayload)
+      .then((resp) => {
+        const receivedinfo = resp.data;
+        setetherCoins(receivedinfo);
+      })
+      .catch((error) => console.log(error));
+  }
 
   function ErrPopup({ err }) {
     return (
@@ -700,6 +733,26 @@ function App() {
       </div>
     );
   }
+
+  // function DisclaimerPopip() {
+  //   return (
+  //     <div
+  //       class='greypill'
+  //       style={{
+  //         position: "absolute",
+  //         display: display2,
+  //         top: ycord2,
+  //         left: xcord2,
+  //         zIndex: 100,
+  //       }}
+  //     >
+  //       <div> SHORT DISCLAIMER </div>
+  //       <div> The balance won't automatically  </div>
+  //       <div> </div>
+  //       <div> </div>
+  //     </div>
+  //   );
+  // }
 
   async function setdetails(e, errCode) {
     e.preventDefault();
@@ -730,7 +783,7 @@ function App() {
     //   const fetchpayloadJson = JSON.stringify();
 
     axios
-      .post("http://localhost:8001", fetchpayload)
+      .post("http://localhost:8001/gettransactions", fetchpayload)
       .then((resp) => {
         const receivedinfo = resp.data;
         settransactions(receivedinfo);
@@ -774,9 +827,32 @@ function App() {
           </button>{" "}
         </div>
       </h1>
-
       <ErrPopup err={err} />
-
+      <DatePicker
+        selected={startDate}
+        onChange={(date) => setStartDate(date)}
+      />
+      {/* <div> {startDate.getTime()} </div> */}
+      <div>
+        {" "}
+        Balance is {etherCoins.balanceattime / 1000000000000000000} Ethereum
+      </div>
+      <div>
+        {" "}
+        <input
+          type='text'
+          id='address1'
+          placeholder='address goes here'
+        />{" "}
+      </div>
+      <button
+        class='greenpillbutton'
+        onClick={() => {
+          getBalanceAtDate();
+        }}
+      >
+        CLICK TO GET BALANCE AT SPECIFIC TIME
+      </button>{" "}
       <table>
         <thead>
           <tr>
@@ -798,7 +874,7 @@ function App() {
                   {" "}
                   {transaction.isError === "1" && (
                     <IconContext.Provider
-                      value={{ color: "red", size: "25px" }}
+                      value={{ color: "red", size: "30px" }}
                     >
                       <div
                         onMouseEnter={(e) => {
