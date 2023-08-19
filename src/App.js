@@ -691,10 +691,10 @@ function App() {
     balanceattime: 0,
   });
 
-  async function getBalanceAtDate() {
-    const date1 = startDate.getTime();
+  function getBalanceAtDate() {
+    const date1 = startDate.getTime() / 1000;
 
-    console.log(startDate.getTime());
+    console.log(startDate.getTime() / 1000);
 
     const fetchpayload =
       '{  "address": "' +
@@ -770,7 +770,7 @@ function App() {
     await seterr();
   }
 
-  async function getTransactions() {
+  function getTransactions() {
     setwalletaddress(document.getElementById("address").value);
 
     const fetchpayload =
